@@ -44,7 +44,7 @@ fn main() {
     }
 }
 
-fn exibir_tabuleiro(tabuleiro: &[[char; 3]; 3]) -> String {
+fn exibir_tabuleiro(tabuleiro: &[[char; 3]; 3]) {
     todo!()
 }
 
