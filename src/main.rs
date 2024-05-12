@@ -57,7 +57,15 @@ fn exibir_tabuleiro(tabuleiro: &[[char; 3]; 3]) {
 }
 
 fn ler_entrada() -> Result<usize, String> {
-    todo!()
+    println!("Insira o número da cédula (1-9):");
+
+    let mut entrada = String::new();
+
+    match std::io::stdin().read_line(&mut entrada) {
+        Err(_) => return Err("Falha ao ler jogada.".to_string()),
+
+        Ok(_)=> return Ok(entrada.trim().parse::<usize>().unwrap())
+    }
 }
 
 fn marcar_jogada(
