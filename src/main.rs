@@ -46,7 +46,14 @@ fn main() {
 }
 
 fn exibir_tabuleiro(tabuleiro: &[[char; 3]; 3]) {
-    todo!()
+    println!(); // Uma linha em branco para espaçamento
+    for (index, linha) in tabuleiro.iter().enumerate() {
+        if index > 0 {
+            println!("---+---+---"); // Linha divisória entre as linhas do tabuleiro
+        }
+        println!(" {} | {} | {}", linha[0], linha[1], linha[2]);
+    }
+    println!(); // Uma linha em branco para espaçamento após o tabuleiro
 }
 
 fn ler_entrada() -> Result<usize, String> {
