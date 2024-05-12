@@ -35,6 +35,7 @@ fn main() {
             } else {
                 println!("Jogador O ganhou a partida");
             }
+            break;
         } else if deu_empate(&tabuleiro) {
             println!("Deu velha!!");
             break;
