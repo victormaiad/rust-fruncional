@@ -60,7 +60,7 @@ fn exibir_tabuleiro(tabuleiro: &[[char; 3]; 3]) {
         }
         println!(" {} | {} | {}", linha[0], linha[1], linha[2]);
     }
-    println!(); // Uma linha em branco para o espaçamento após o tabuleiro
+    println!(); // Uma linha em branco para espaçamento após o tabuleiro
 }
 
 fn ler_entrada(texto: &str) -> Result<String, String> {
