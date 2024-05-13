@@ -14,8 +14,15 @@ fn main() {
             println!("Vez do jogador O:");
         }
 
-        let entrada = match ler_entrada() {
-            Ok(num) => num - 1,
+        let cedula = match ler_entrada("Insira o número da cédula (1-9):") {
+            Ok(entrada) => {
+                if let Ok(num) = entrada.trim().parse::<usize>() {
+                    num - 1
+                } else {
+                    println!("Número inválido!");
+                    continue;
+                }
+            }
             Err(e) => {
                 // Se retonar um erro vamos printá-lo
                 println!("{e}");
@@ -23,7 +30,7 @@ fn main() {
             }
         };
 
-        if let Err(e) = marcar_jogada(&mut tabuleiro, jogador_x, entrada) {
+        if let Err(e) = marcar_jogada(&mut tabuleiro, jogador_x, cedula) {
             // Se retonar um erro vamos printá-lo
             println!("{e}");
             continue;
@@ -56,38 +63,29 @@ fn exibir_tabuleiro(tabuleiro: &[[char; 3]; 3]) {
     println!(); // Uma linha em branco para espaçamento após o tabuleiro
 }
 
-fn ler_entrada() -> Result<usize, String> {
-    println!("Insira o número da cédula (1-9):");
+fn ler_entrada(texto: &str) -> Result<String, String> {
+    println!("{}", texto);
 
     let mut entrada = String::new();
 
-   let num = match std::io::stdin().read_line(&mut entrada) {
-        Err(_) => return Err("Falha ao ler jogada.".to_string()),
-
-        Ok(_)=> {
-           if let Ok (num) = entrada.trim().parse::<usize>(){
-               num
-           }else {
-               return Err("essa jogada ja foi realizada".to_string())
-           }
-        }
-       
+    return match std::io::stdin().read_line(&mut entrada) {
+        Err(_) => Err("Falha ao ler entrada.".to_string()),
+        Ok(_) => Ok(entrada)
     };
-    if num < 1 || num > 9 {
-        return Err("Número inválido. Insira um número de 1 a 9.".to_string());
-    };
-    Ok(num)
 }
 
 fn marcar_jogada(
     tabuleiro: &mut [[char; 3]; 3],
     jogador_x: bool,
-    ponto: usize
+    ponto: usize,
 ) -> Result<(), String> {
-   if tabuleiro[ponto / 3][ponto % 3] != ' '{
-       return Err("Essa cédula já foi marcada".to_string());
-   }
-    tabuleiro [ponto / 3][ponto % 3] = if jogador_x { 'X' } else { 'O' };
+    let (x, y) = (ponto / 3, ponto % 3);
+
+    if tabuleiro[x][y] != ' ' {
+        return Err("Essa cédula já foi marcada".to_string());
+    }
+
+    tabuleiro[x][y] = if jogador_x { 'X' } else { 'O' };
     Ok(())
 }
 
