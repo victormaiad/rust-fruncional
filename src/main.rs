@@ -61,11 +61,22 @@ fn ler_entrada() -> Result<usize, String> {
 
     let mut entrada = String::new();
 
-    match std::io::stdin().read_line(&mut entrada) {
+   let num = match std::io::stdin().read_line(&mut entrada) {
         Err(_) => return Err("Falha ao ler jogada.".to_string()),
 
-        Ok(_)=> return Ok(entrada.trim().parse::<usize>().unwrap())
-    }
+        Ok(_)=> {
+           if let Ok (num) = entrada.trim().parse::<usize>(){
+               num
+           }else {
+               return Err("essa jogada ja foi realizada".to_string())
+           }
+        }
+       
+    };
+    if num < 1 || num > 9 {
+        return Err("Número inválido. Insira um número de 1 a 9.".to_string());
+    };
+    Ok(num)
 }
 
 fn marcar_jogada(
@@ -73,7 +84,11 @@ fn marcar_jogada(
     jogador_x: bool,
     ponto: usize
 ) -> Result<(), String> {
-    todo!()
+   if tabuleiro[ponto / 3][ponto % 3] != ' '{
+       return Err("Essa cédula já foi marcada".to_string());
+   }
+    tabuleiro [ponto / 3][ponto % 3] = if jogador_x { 'X' } else { 'O' };
+    Ok(())
 }
 
 fn verificar_vitoria(tabuleiro: &[[char; 3]; 3]) -> bool {
