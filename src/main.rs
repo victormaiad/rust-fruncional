@@ -1,17 +1,21 @@
+use chrono::{Local};
 fn main() {
+    let jogador_x_nome =ler_entrada("Digite seu nome Jogador X: ").unwrap();
+    let jogador_o_nome = ler_entrada("Digite seu nome Jogador O: ").unwrap();
     // Tabuleiro inicializado com [[' ', ' ', ' '], [' ', ' ', ' '], [' ', ' ', ' ']]
     let mut tabuleiro = [[' '; 3]; 3];
     // O jogo começa pelo jogado "X"
     let mut jogador_x = true;
+    let inicio = Local::now();
 
     loop {
         // Mostra uma imagem do tabuleiro atual
         exibir_tabuleiro(&tabuleiro);
 
         if jogador_x {
-            println!("Vez do jogador X:");
+            println!("Vez do jogador X = {jogador_x_nome}");
         } else {
-            println!("Vez do jogador O:");
+            println!("Vez do jogador O = {jogador_o_nome}");
         }
 
         let cedula = match ler_entrada("Insira o número da cédula (1-9):") {
@@ -50,6 +54,34 @@ fn main() {
 
         jogador_x = !jogador_x;
     }
+
+    let data_hora_atual = Local::now(); //Capturar o horário atual
+    let duracao_jogo = data_hora_atual.signed_duration_since(inicio); //Calcular duração do jogo
+
+    let deu_vitoria = verificar_vitoria(&tabuleiro);
+    let jogador_vencedor = if jogador_x && deu_vitoria {
+        Some(&jogador_x_nome)
+    } else if !jogador_x && deu_vitoria {
+        Some(&jogador_o_nome)
+    } else {
+        None
+    };
+
+    if let Some(jogador_vencedor) = jogador_vencedor{
+        println!("\nRelatório da Partida:");
+        println!("Jogadores Participantes: X = {} O = {}", &jogador_x_nome, &jogador_o_nome);
+        println!("Vencedor: = {} ", jogador_vencedor);
+
+    } else {
+        println!("\nRelatório da Partida:");
+        println!("Jogadores Participantes: X = {} e O = {}", &jogador_x_nome, &jogador_o_nome);
+        println!("Vencedor: Empate");
+    }
+
+    println!("Hora e Data Inicial do Jogo: {}", inicio.format("%Y-%m-%d %H:%M:%S"));
+    println!("Hora e Data Final do Jogo: {}", data_hora_atual.format("%Y-%m-%d %H:%M:%S"));
+    println!("Duração do Jogo: {:?}", duracao_jogo);
+
 }
 
 fn exibir_tabuleiro(tabuleiro: &[[char; 3]; 3]) {
