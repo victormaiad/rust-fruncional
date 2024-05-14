@@ -1,7 +1,13 @@
-use chrono::{Local};
+use chrono::Local;
+
 fn main() {
-    let jogador_x_nome =ler_entrada("Digite seu nome Jogador X: ").unwrap();
-    let jogador_o_nome = ler_entrada("Digite seu nome Jogador O: ").unwrap();
+    let jogador_x_nome = ler_entrada("Digite seu nome Jogador X: ")
+        .unwrap()
+        .replace("\n", "");
+    let jogador_o_nome = ler_entrada("Digite seu nome Jogador O: ")
+        .unwrap()
+        .replace("\n", "");
+
     // Tabuleiro inicializado com [[' ', ' ', ' '], [' ', ' ', ' '], [' ', ' ', ' ']]
     let mut tabuleiro = [[' '; 3]; 3];
     // O jogo começa pelo jogado "X"
@@ -40,48 +46,37 @@ fn main() {
             continue;
         }
 
-        if verificar_vitoria(&tabuleiro) {
-            if jogador_x {
-                println!("Jogador X ganhou a partida");
+        let deu_empate = deu_empate(&tabuleiro);
+        let deu_vitoria = verificar_vitoria(&tabuleiro);
+
+        if deu_empate || deu_vitoria {
+            println!("\nRelatório da Partida:");
+            println!("Jogadores Participantes: {} vs {}", &jogador_x_nome, &jogador_o_nome);
+
+            if deu_vitoria {
+                let jogador_vencedor = if jogador_x {
+                    &jogador_x_nome
+                } else {
+                    &jogador_o_nome
+                };
+
+                println!("Vencedor: {jogador_vencedor}");
             } else {
-                println!("Jogador O ganhou a partida");
+                println!("Vencedor: Empate");
             }
-            break;
-        } else if deu_empate(&tabuleiro) {
-            println!("Deu velha!!");
+
+            let data_hora_atual = Local::now(); //Capturar o horário atual
+            let duracao_jogo = data_hora_atual.signed_duration_since(inicio); //Calcular duração do jogo
+
+            println!("Hora e Data Inicial do Jogo: {}", inicio.format("%Y-%m-%d %H:%M:%S"));
+            println!("Hora e Data Final do Jogo: {}", data_hora_atual.format("%Y-%m-%d %H:%M:%S"));
+            println!("Duração do Jogo: {} segundos", duracao_jogo.num_seconds());
+
             break;
         }
 
         jogador_x = !jogador_x;
     }
-
-    let data_hora_atual = Local::now(); //Capturar o horário atual
-    let duracao_jogo = data_hora_atual.signed_duration_since(inicio); //Calcular duração do jogo
-
-    let deu_vitoria = verificar_vitoria(&tabuleiro);
-    let jogador_vencedor = if jogador_x && deu_vitoria {
-        Some(&jogador_x_nome)
-    } else if !jogador_x && deu_vitoria {
-        Some(&jogador_o_nome)
-    } else {
-        None
-    };
-
-    if let Some(jogador_vencedor) = jogador_vencedor{
-        println!("\nRelatório da Partida:");
-        println!("Jogadores Participantes: X = {} O = {}", &jogador_x_nome, &jogador_o_nome);
-        println!("Vencedor: = {} ", jogador_vencedor);
-
-    } else {
-        println!("\nRelatório da Partida:");
-        println!("Jogadores Participantes: X = {} e O = {}", &jogador_x_nome, &jogador_o_nome);
-        println!("Vencedor: Empate");
-    }
-
-    println!("Hora e Data Inicial do Jogo: {}", inicio.format("%Y-%m-%d %H:%M:%S"));
-    println!("Hora e Data Final do Jogo: {}", data_hora_atual.format("%Y-%m-%d %H:%M:%S"));
-    println!("Duração do Jogo: {:?}", duracao_jogo);
-
 }
 
 fn exibir_tabuleiro(tabuleiro: &[[char; 3]; 3]) {
